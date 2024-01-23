@@ -37,23 +37,43 @@ class MainActivity : ComponentActivity() {
                             .wrapContentSize(Alignment.Center)
                             .padding(5.dp)
                     ) {
+                        var counter = 0
                         val buttonModifier = Modifier
                             .size(width = 100.dp, height = 100.dp)
                             .padding(5.dp)
-                        val buttonTextList = mutableListOf("")
 
-                        repeat(8) {
-                            val text by remember { mutableStateOf("") }
-                            buttonTextList.add(text)
-                        }
+                        val buttonTextList =
+                            remember {
+                                mutableStateListOf(
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    ""
+                                )
+                            }
+
+
                         
                         Row()
                         {
-                            
+
                             Button(modifier = buttonModifier,
                                     onClick = {
-                                        buttonTextList[0] = "X"
+                                        counter++
+                                        if(whichPlayerClicked(counter = counter))
+                                        {
+                                            buttonTextList[0] = "X"
+                                        }
+                                        else {
+                                            buttonTextList[0] = "O"
+                                        }
                                     }) {
+
                                 Text(buttonTextList[0])
                                 Log.d(TAG, buttonTextList[0])
                             }
@@ -114,6 +134,13 @@ class MainActivity : ComponentActivity() {
         Text(modifier = Modifier.wrapContentSize(Alignment.Center),
             text = "Hello $name!")
     }
+
+    @Composable
+    fun whichPlayerClicked(counter: Int): Boolean {
+        return (counter % 2 == 0)
+    }
+
+
 }
 
 
