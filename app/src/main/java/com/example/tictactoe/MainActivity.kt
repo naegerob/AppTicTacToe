@@ -216,17 +216,8 @@ class MainActivity : ComponentActivity() {
         var counterPost = counter
         if(button in 0..8)
         {
-            if(buttonTextList[button].isEmpty())
-            {
-                counterPost++
-                if(whichPlayerClicked(counter = counterPost))
-                {
-                    buttonTextList[button] = "X"
-                }
-                else {
-                    buttonTextList[button] = "O"
-                }
-            }
+            counterPost++
+            buttonTextList[button] = if (whichPlayerClicked(counterPost)) "X" else "0"
         }
         return counterPost
     }
@@ -235,53 +226,29 @@ class MainActivity : ComponentActivity() {
         return (counter % 2 == 0)
     }
 
-    private fun checkResult(buttonTextList: SnapshotStateList<String>, player: String) : Boolean{
-        val checkDiagonal1 = buttonTextList[0] == player
-        val checkDiagonal2 = buttonTextList[4] == player
-        val checkDiagonal3 = buttonTextList[8] == player
-        val checkDiagonal = checkDiagonal1 && checkDiagonal2 && checkDiagonal3
-        if (checkDiagonal)
-        {
-            return true
-        }
+    private fun checkResult(buttonTextList: SnapshotStateList<String>, player: String): Boolean {
+        val winPatterns = listOf(
+            listOf(0, 1, 2), // First row
+            listOf(3, 4, 5), // Second row
+            listOf(6, 7, 8), // Third row
+            listOf(0, 3, 6), // First column
+            listOf(1, 4, 7), // Second column
+            listOf(2, 5, 8), // Third column
+            listOf(0, 4, 8), // Diagonal from top-left to bottom-right
+            listOf(2, 4, 6)  // Diagonal from top-right to bottom-left
+        )
 
-        val checkDiagonal4 = buttonTextList[2] == player
-        val checkDiagonal5 = buttonTextList[4] == player
-        val checkDiagonal6 = buttonTextList[6] == player
-        val checkDiagonal7 = checkDiagonal4 && checkDiagonal5 && checkDiagonal6
-        if (checkDiagonal7)
-        {
-            return true
-        }
-
-        var offsetX = 0
-        val offsetY = 3
-        repeat(3) {
-            val checkColumn1 = buttonTextList[offsetX] == player
-            val checkColumn2 = buttonTextList[offsetX + offsetY] == player
-            val checkColumn3 = buttonTextList[offsetX + 2 * offsetY] == player
-            val checkColumn = checkColumn1 && checkColumn2 && checkColumn3
-            if (checkColumn)
-            {
+        for (pattern in winPatterns) {
+            if (pattern.all { buttonTextList[it] == player }) {
                 return true
             }
-
-            val checkRow1 = buttonTextList[offsetX * offsetY] == player
-            val checkRow2 = buttonTextList[offsetX * offsetY + 1] == player
-            val checkRow3 = buttonTextList[offsetX * offsetY + 2] == player
-            val checkRow = checkRow1 && checkRow2 && checkRow3
-            if (checkRow)
-            {
-                return true
-            }
-            offsetX++
         }
         return false
     }
 
     enum class Player(val player: String) {
-        Player1("X"),
-        Player2("O"),
+        Player1("O"),
+        Player2("X"),
     }
 }
 
