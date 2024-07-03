@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -59,7 +60,17 @@ class MainActivity : ComponentActivity() {
                                     ""
                                 )
                             }
-
+                        Button(modifier = Modifier.height(36.dp)
+                            .align(CenterHorizontally),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
+                            onClick = {
+                                buttonColor = Purple700
+                                buttonTextList.clear()
+                                buttonTextList.addAll(List(9) { "" })
+                        }) {
+                            Text(text = "Reset Game")
+                        }
+                        Spacer(modifier = Modifier.height(36.dp))
                         Row()
                         {
 
@@ -217,7 +228,7 @@ class MainActivity : ComponentActivity() {
         if(button in 0..8)
         {
             counterPost++
-            buttonTextList[button] = if (whichPlayerClicked(counterPost)) "X" else "0"
+            buttonTextList[button] = if (whichPlayerClicked(counterPost)) "X" else "O"
         }
         return counterPost
     }
@@ -237,7 +248,6 @@ class MainActivity : ComponentActivity() {
             listOf(0, 4, 8), // Diagonal from top-left to bottom-right
             listOf(2, 4, 6)  // Diagonal from top-right to bottom-left
         )
-
         for (pattern in winPatterns) {
             if (pattern.all { buttonTextList[it] == player }) {
                 return true
