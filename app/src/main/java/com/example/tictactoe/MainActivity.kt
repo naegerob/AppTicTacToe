@@ -28,7 +28,9 @@ class MainActivity : ComponentActivity() {
             TicTacToeTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize()
+                                        .padding(12.dp),
+
                     color = MaterialTheme.colors.background
                 ) {
                     Text(text = "TicTacToe", fontSize = 30.sp, fontWeight = FontWeight.Bold,
@@ -40,6 +42,7 @@ class MainActivity : ComponentActivity() {
                             .padding(5.dp)
                     ) {
                         var counter = 0
+                        var winLock by remember { mutableStateOf(false) }
                         val buttonModifier = Modifier
                             .size(width = 100.dp, height = 100.dp)
                             .padding(5.dp)
@@ -61,9 +64,10 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         Button(modifier = Modifier.height(36.dp)
-                            .align(CenterHorizontally),
+                                                    .align(CenterHorizontally),
                             colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                             onClick = {
+                                winLock = false
                                 buttonColor = Purple700
                                 buttonTextList.clear()
                                 buttonTextList.addAll(List(9) { "" })
@@ -71,150 +75,31 @@ class MainActivity : ComponentActivity() {
                             Text(text = "Reset Game")
                         }
                         Spacer(modifier = Modifier.height(36.dp))
-                        Row()
-                        {
-
-                            Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-                                    onClick = {
-                                        counter = updateButton(0, buttonTextList, counter)
-                                        if(checkResult(buttonTextList, Player.Player1.player))
-                                        {
-                                            buttonColor = Color.Red
-                                        }
-                                        else if(checkResult(buttonTextList, Player.Player2.player))
-                                        {
-                                            buttonColor = Color.Green
-                                        }
-                                    }) {
-                                Text(buttonTextList[0], fontSize = symbolSize)
-                                Log.d(TAG, buttonTextList[0])
-                            }
-                            Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-                                    onClick = {
-                                        counter = updateButton(1,  buttonTextList, counter)
-                                        if(checkResult(buttonTextList, Player.Player1.player))
-                                        {
-                                            buttonColor = Color.Red
-                                        }
-                                        else if(checkResult(buttonTextList, Player.Player2.player))
-                                        {
-                                            buttonColor = Color.Green
-                                        }
-                                    }) {
-                                Text(buttonTextList[1], fontSize = symbolSize)
-                                Log.d(TAG, buttonTextList[1])
-                            }
-                            Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-                                    onClick = {
-                                        counter = updateButton(2, buttonTextList, counter)
-                                        if(checkResult(buttonTextList, Player.Player1.player))
-                                        {
-                                            buttonColor = Color.Red
-                                        }
-                                        else if(checkResult(buttonTextList, Player.Player2.player))
-                                        {
-                                            buttonColor = Color.Green
-                                        }
-                                    }) {
-                                Text(buttonTextList[2], fontSize = symbolSize)
-                                Log.d(TAG, buttonTextList[2])
-                            }
-                        }
-                        Row()
-                        {
-                            Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-                                    onClick = {
-                                        counter = updateButton(3, buttonTextList, counter)
-                                        if(checkResult(buttonTextList, Player.Player1.player))
-                                        {
-                                            buttonColor = Color.Red
-                                        }
-                                        else if(checkResult(buttonTextList, Player.Player2.player))
-                                        {
-                                            buttonColor = Color.Green
-                                        }
-                                    }) {
-                                Text(buttonTextList[3], fontSize = symbolSize)
-                                Log.d(TAG, buttonTextList[3])
-                            }
-                            Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-                                    onClick = {
-                                        counter = updateButton(4, buttonTextList, counter)
-                                        if(checkResult(buttonTextList, Player.Player1.player))
-                                        {
-                                            buttonColor = Color.Red
-                                        }
-                                        else if(checkResult(buttonTextList, Player.Player2.player))
-                                        {
-                                            buttonColor = Color.Green
-                                        }
-                                    }) {
-                                Text(buttonTextList[4], fontSize = symbolSize)
-                                Log.d(TAG, buttonTextList[4])
-                            }
-                            Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-                                    onClick = {
-                                        counter = updateButton(5, buttonTextList, counter)
-                                        if(checkResult(buttonTextList, Player.Player1.player))
-                                        {
-                                            buttonColor = Color.Red
-                                        }
-                                        else if(checkResult(buttonTextList, Player.Player2.player))
-                                        {
-                                            buttonColor = Color.Green
-                                        }
-                                    }) {
-                                Text(buttonTextList[5], fontSize = symbolSize)
-                                Log.d(TAG, buttonTextList[5])
-                            }
-                        }
-                        Row()
-                        {
-                            Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-                                    onClick = {
-                                        counter = updateButton(6, buttonTextList, counter)
-                                        if(checkResult(buttonTextList, Player.Player1.player))
-                                        {
-                                            buttonColor = Color.Red
-                                        }
-                                        else if(checkResult(buttonTextList, Player.Player2.player))
-                                        {
-                                            buttonColor = Color.Green
-                                        }
-                                    }) {
-                                Text(buttonTextList[6], fontSize = symbolSize)
-                                Log.d(TAG, buttonTextList[6])
-                            }
-                            Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-                                    onClick = {
-                                        counter = updateButton(7, buttonTextList, counter)
-                                        if(checkResult(buttonTextList, Player.Player1.player))
-                                        {
-                                            buttonColor = Color.Red
-                                        }
-                                        else if(checkResult(buttonTextList, Player.Player2.player))
-                                        {
-                                            buttonColor = Color.Green
-                                        }
-                                    }) {
-                                Text(buttonTextList[7], fontSize = symbolSize)
-                                Log.d(TAG, buttonTextList[7])
-                            }
-                            Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-                                    onClick = {
-                                        counter = updateButton(8, buttonTextList, counter)
-                                        if(checkResult(buttonTextList, Player.Player1.player))
-                                        {
-                                            buttonColor = Color.Red
-                                        }
-                                        else if(checkResult(buttonTextList, Player.Player2.player))
-                                        {
-                                            buttonColor = Color.Green
-                                        }
-                                    }) {
-                                ButtonDefaults.buttonColors(backgroundColor = buttonColor)
-                                Text(buttonTextList[8], fontSize = symbolSize)
-                                Log.d(TAG, buttonTextList[8])
+                        for (i in 0..2) {
+                            Row()
+                            {
+                                for (j in 0..2) {
+                                    val buttonId = j + i * 3
+                                    Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
+                                        onClick = {
+                                            if (winLock || buttonTextList[buttonId].isNotEmpty())
+                                                return@Button
+                                            counter = updateButton(buttonId, buttonTextList, counter)
+                                            if(checkResult(buttonTextList, Player.Player1.player))
+                                            {
+                                                buttonColor = Color.Red
+                                                winLock = true
+                                            }
+                                            else if(checkResult(buttonTextList, Player.Player2.player))
+                                            {
+                                                buttonColor = Color.Green
+                                                winLock = true
+                                            }
+                                        }) {
+                                        Text(buttonTextList[buttonId], fontSize = symbolSize)
+                                        Log.d(TAG, buttonTextList[buttonId])
+                                    }
+                                }
                             }
                         }
                     }
