@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                                         .padding(12.dp),
 
-                    color = MaterialTheme.colors.background
+                    color = Color.White
                 ) {
                     Text(text = "TicTacToe", fontSize = 30.sp, fontWeight = FontWeight.Bold,
                         modifier = Modifier.wrapContentSize(Alignment.TopCenter))
