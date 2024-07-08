@@ -29,12 +29,13 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize()
-                                        .padding(12.dp),
-
-                    color = Color.White
                 ) {
-                    Text(text = "TicTacToe", fontSize = 30.sp, fontWeight = FontWeight.Bold,
-                        modifier = Modifier.wrapContentSize(Alignment.TopCenter))
+                    Text(text = "TicTacToe",
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.wrapContentSize(Alignment.TopCenter)
+                                            .padding(16.dp))
+
                     Column(
                         //verticalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier
@@ -146,6 +147,7 @@ class MainActivity : ComponentActivity() {
         Player2("X"),
     }
 }
+
 
 
 
