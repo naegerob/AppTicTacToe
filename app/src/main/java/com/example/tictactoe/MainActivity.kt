@@ -1,7 +1,6 @@
 package com.example.tictactoe
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -20,10 +19,8 @@ import com.example.tictactoe.ui.theme.TicTacToeTheme
 
 class MainActivity : ComponentActivity() {
 
-
-    val TAG = "Main"
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    super.onCreate(savedInstanceState)
         setContent {
             TicTacToeTheme {
                 // A surface container using the 'background' color from the theme
@@ -43,7 +40,7 @@ class MainActivity : ComponentActivity() {
                             .padding(5.dp)
                     ) {
                         var counter = 0
-                        var winLock by remember { mutableStateOf(false) }
+                        var isGameWon by remember { mutableStateOf(false) }
                         val buttonModifier = Modifier
                             .size(width = 100.dp, height = 100.dp)
                             .padding(5.dp)
@@ -68,7 +65,7 @@ class MainActivity : ComponentActivity() {
                                                     .align(CenterHorizontally),
                             colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                             onClick = {
-                                winLock = false
+                                isGameWon = false
                                 buttonColor = Purple700
                                 buttonTextList.clear()
                                 buttonTextList.addAll(List(9) { "" })
@@ -83,22 +80,21 @@ class MainActivity : ComponentActivity() {
                                     val buttonId = j + i * 3
                                     Button(modifier = buttonModifier, colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                                         onClick = {
-                                            if (winLock || buttonTextList[buttonId].isNotEmpty())
+                                            if (isGameWon || buttonTextList[buttonId].isNotEmpty())
                                                 return@Button
                                             counter = updateButton(buttonId, buttonTextList, counter)
                                             if(checkResult(buttonTextList, Player.Player1.player))
                                             {
                                                 buttonColor = Color.Red
-                                                winLock = true
+                                                isGameWon = true
                                             }
                                             else if(checkResult(buttonTextList, Player.Player2.player))
                                             {
                                                 buttonColor = Color.Green
-                                                winLock = true
+                                                isGameWon = true
                                             }
                                         }) {
                                         Text(buttonTextList[buttonId], fontSize = symbolSize)
-                                        Log.d(TAG, buttonTextList[buttonId])
                                     }
                                 }
                             }
