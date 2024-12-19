@@ -16,11 +16,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tictactoe.ui.theme.Purple700
 import com.example.tictactoe.ui.theme.TicTacToeTheme
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.websocket.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+        val client = HttpClient(CIO)
+
         setContent {
             TicTacToeTheme {
                 // A surface container using the 'background' color from the theme
@@ -83,12 +92,17 @@ class MainActivity : ComponentActivity() {
                                             if (isGameWon || buttonTextList[buttonId].isNotEmpty())
                                                 return@Button
                                             counter = updateButton(buttonId, buttonTextList, counter)
-                                            if(checkResult(buttonTextList, Player.Player1.player))
+                                            if(whichPlayerClicked(counter) == Player.Player2) {
+                                                GlobalScope.launch {  // TODO: refactor here: might be shitty
+                                                    getNPCMove(client)
+                                                }
+                                            }
+                                            if(checkResult(buttonTextList, Player.Player1.symbol))
                                             {
                                                 buttonColor = Color.Red
                                                 isGameWon = true
                                             }
-                                            else if(checkResult(buttonTextList, Player.Player2.player))
+                                            else if(checkResult(buttonTextList, Player.Player2.symbol))
                                             {
                                                 buttonColor = Color.Green
                                                 isGameWon = true
@@ -110,13 +124,13 @@ class MainActivity : ComponentActivity() {
         if(button in 0..8)
         {
             counterPost++
-            buttonTextList[button] = if (whichPlayerClicked(counterPost)) "X" else "O"
+            buttonTextList[button] = if (whichPlayerClicked(counterPost) == Player.Player2) Player.Player2.symbol else Player.Player1.symbol
         }
         return counterPost
     }
 
-    private fun whichPlayerClicked(counter: Int): Boolean {
-        return (counter % 2 == 0)
+    private fun whichPlayerClicked(counter: Int): Player {
+        return if(counter % 2 == 0) Player.Player2 else Player.Player1
     }
 
     private fun checkResult(buttonTextList: SnapshotStateList<String>, player: String): Boolean {
@@ -138,10 +152,31 @@ class MainActivity : ComponentActivity() {
         return false
     }
 
-    enum class Player(val player: String) {
+    enum class Player(val symbol: String) {
         Player1("O"),
         Player2("X"),
     }
+
+    suspend fun getNPCMove(client: HttpClient): GameField? {
+        var gamefieldSerReturn: GameField? = null
+        client.webSocket(
+            host = "localhost",
+            port = 8080,
+            path = "/tictactoe"
+        ) {
+
+            mutableListOf("X", "O", "O", "X", "", "O", "X", "", "")
+            val gameField = mutableListOf("X", "O", "O", "", "", "O", "X", "", "")
+            val gameFieldSer = GameField(gameField)
+
+            sendSerialized(gameFieldSer)
+            gamefieldSerReturn = receiveDeserialized<GameField>()
+        }
+        return gamefieldSerReturn
+    }
+
+    @Serializable
+    data class GameField(val gameField : MutableList<String>)
 }
 
 
