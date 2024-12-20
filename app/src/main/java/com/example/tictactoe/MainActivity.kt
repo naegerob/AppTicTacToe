@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -19,13 +22,13 @@ import com.example.tictactoe.ui.theme.TicTacToeTheme
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.websocket.*
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
         val client = HttpClient(CIO)
@@ -56,7 +59,7 @@ class MainActivity : ComponentActivity() {
                         var buttonColor by remember { mutableStateOf(Purple700) }
                         val symbolSize = 36.sp
 
-                        val buttonTextList =
+                        var buttonTextList =
                             remember {
                                 mutableStateListOf(
                                     "",
@@ -93,8 +96,8 @@ class MainActivity : ComponentActivity() {
                                                 return@Button
                                             counter = updateButton(buttonId, buttonTextList, counter)
                                             if(whichPlayerClicked(counter) == Player.Player2) {
-                                                GlobalScope.launch {  // TODO: refactor here: might be shitty
-                                                    getNPCMove(client)
+                                                runBlocking(Dispatchers.IO) {
+                                                    buttonTextList = getNPCMove(client, buttonTextList)
                                                 }
                                             }
                                             if(checkResult(buttonTextList, Player.Player1.symbol))
@@ -157,16 +160,13 @@ class MainActivity : ComponentActivity() {
         Player2("X"),
     }
 
-    suspend fun getNPCMove(client: HttpClient): GameField? {
+    suspend fun getNPCMove(client: HttpClient, gameField: MutableList<String>): GameField? {
         var gamefieldSerReturn: GameField? = null
         client.webSocket(
             host = "localhost",
             port = 8080,
             path = "/tictactoe"
         ) {
-
-            mutableListOf("X", "O", "O", "X", "", "O", "X", "", "")
-            val gameField = mutableListOf("X", "O", "O", "", "", "O", "X", "", "")
             val gameFieldSer = GameField(gameField)
 
             sendSerialized(gameFieldSer)
